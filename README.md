@@ -81,7 +81,7 @@ torchrun --nproc_per_node=NUM_GPUS rerank/run.py --config_path config/random_102
 ```
 
 When using distributed training, if you encounter communication issues between different GPUs when saving the model at the end of training. 
-You can try to modify some codes in `transformers.trainer.py` file, specifically, replace the following code in `_inner_training_loop` function
+You can try to modify some codes in `transformers.trainer.py` file, specifically, replace the following code in `_inner_training_loop` function:
 ```python
 if args.load_best_model_at_end and self.state.best_model_checkpoint is not None:
     # Wait for everyone to get here so we are sure the model has been saved by process 0.
