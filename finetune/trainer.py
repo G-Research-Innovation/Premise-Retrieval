@@ -29,10 +29,6 @@ def save_ckpt_for_sentence_transformers(ckpt_dir, pooling_mode: str = 'cls', nor
     model.save(ckpt_dir)
 
 
-
-
-
-# 这个是先升再降的
 class CustomLR(torch.optim.lr_scheduler._LRScheduler):
     def __init__(self, optimizer, steps_per_phase: int, lr_schedule: list, last_epoch: int = -1):
         """
