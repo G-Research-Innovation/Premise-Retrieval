@@ -106,7 +106,7 @@ You can download the trained models from [this link](https://huggingface.co/ruc-
 
 ### Testing the Retrieval Model
 
-To evaluate the Retrieval model, you need to modify the `eval_file` under the `[eval]` section in the `config.toml` file to the path where `test_increase.jsonl` is located. Also, change the `save_output_path` to `retrieval_output_test_s0_d0.jsonl`. Then, run the following script:
+To evaluate the Retrieval model, you need to modify the `eval_file` under the `[eval]` section in the `config/random.toml` file to the path where `test_increase.jsonl` is located. Also, change the `save_output_path` to `retrieval_output_test_s0_d0.jsonl`. Then, run the following script:
 
 ```bash
 python test_finetune/eval_increase_test.py --config_path config/random.toml
