@@ -19,8 +19,8 @@ First, generate the raw dataset using our script, which can be downloaded from [
 Next, preprocess the dataset. You can generate the dataset required for our method by running the following script:
 
 ```bash
-python process_data/generate_our_from_raw.py --config_path config/random.toml
-python process_data/generate_pretrain_tokenizer_data.py --config_path config/random.toml
+python preprocess/generate_our_from_raw.py --config_path config/random.toml
+python preprocess/generate_pretrain_tokenizer_data.py --config_path config/random.toml
 ```
 
 ## Training the Tokenizer
