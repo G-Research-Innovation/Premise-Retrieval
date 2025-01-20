@@ -40,15 +40,16 @@ python pretrain/pretrain_tokenizer.py --config_path config/random.toml
 To pretrain the Retrieval model, you can run the following script:
 
 ```bash
-torchrun --nproc_per_node=8 pretrain/pretrain.py --config_path config/random.toml
+torchrun --nproc_per_node=NUM_GPUS pretrain/pretrain.py --config_path config/random.toml
 ```
 
 ### Fine-tuning
 
-After pretraining, fine-tune the model using the script below:
+After pretraining, fine-tune the model using the script below. 
+You also need to adjust the `device_num` parameter under the `[finetune]` section in the `config/random.toml` file according to the number of GPUs you are using. 
 
 ```bash
-torchrun --nproc_per_node=8 finetune/run.py --config_path config/random.toml
+torchrun --nproc_per_node=NUM_GPUS finetune/run.py --config_path config/random.toml
 ```
 
 ## Training the Rerank Model
@@ -68,7 +69,7 @@ python test_finetune/generate_hard_negative.py --config_path config/random.toml
 Pretrain the rerank model with this script:
 
 ```bash
-torchrun --nproc_per_node=8 pretrain/pretrain.py --config_path config/random_1024.toml
+torchrun --nproc_per_node=NUM_GPUS pretrain/pretrain.py --config_path config/random_1024.toml
 ```
 
 ### Fine-tuning
@@ -76,9 +77,29 @@ torchrun --nproc_per_node=8 pretrain/pretrain.py --config_path config/random_102
 Fine-tune the pretrained rerank model by running:
 
 ```bash
-torchrun --nproc_per_node=8 rerank/run.py --config_path config/random_1024.toml
+torchrun --nproc_per_node=NUM_GPUS rerank/run.py --config_path config/random_1024.toml
 ```
 
+When using distributed training, if you encounter communication issues between different GPUs when saving the model at the end of training. 
+You can try to modify some codes in `transformers.trainer.py` file, specifically, replace the following code in `_inner_training_loop` function
+```python
+if args.load_best_model_at_end and self.state.best_model_checkpoint is not None:
+    # Wait for everyone to get here so we are sure the model has been saved by process 0.
+    if is_torch_xla_available():
+        xm.rendezvous("load_best_model_at_end")
+    elif args.parallel_mode == ParallelMode.DISTRIBUTED:
+        dist.barrier()
+    elif is_sagemaker_mp_enabled():
+        smp.barrier()
+```
+with this modified version:
+
+```python
+if args.load_best_model_at_end and self.state.best_model_checkpoint is not None:
+    # Wait for everyone to get here so we are sure the model has been saved by process 0.
+    if not torch.distributed.is_available() or not torch.distributed.is_initialized() or torch.distributed.get_rank() == 0:
+        self._load_best_model()
+```
 ## Testing
 
 You can download the trained models from [this link](https://huggingface.co/ruc-ai4math/Lean_State_Search_Random) and place them in the respective directories.
