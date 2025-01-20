@@ -1,0 +1,73 @@
+config_name = "410_stable_random_1024.toml"
+
+[dataset]
+statement_path = "./mathlib_handler_benchmark_410/statement.jsonl"
+train_dataset_path = "./mathlib_handler_benchmark_410/random/random_our/train.jsonl"
+test_dataset_path = "./mathlib_handler_benchmark_410/random/random_our/val.jsonl"
+random_seed = 13
+test_hard_ratio = 1
+shuffle_ratio = 0
+random_delete_ratio = 0
+
+
+[tokenizer]
+corpus_path = "./mathlib_handler_benchmark_410/random/random_our/pretrain_tokenizer.txt"
+tokenizer_type = "WordPiece"
+save_dir = "./mathlib_handler_benchmark_410/random/random_our/tokenizer"
+
+[model]
+hidden_size = 768
+num_hidden_layers = 6
+num_attention_heads = 12
+intermediate_size = 3072
+max_position_embeddings=1024
+
+
+[pretrain]
+output_dir = "./Pretrain_Model/410_stable_random_1024/"
+train_file_path = "./mathlib_handler_benchmark_410/random/random_our/pretrain_train_data.jsonl"
+eval_file_path = "./mathlib_handler_benchmark_410/random/random_our/pretrain_eval_data.jsonl"
+num_train_epochs = 50
+per_device_train_batch_size = 32
+gradient_accumulation_steps = 4
+save_strategy = "steps"
+save_steps = 100
+save_total_limit = 1
+learning_rate = 2e-4
+logging_steps = 10
+bf16 = 'True'
+tf32 = 'True'
+report_to = "wandb"
+evaluation_strategy = "steps"
+eval_steps = 100
+
+
+[rerank]
+output_dir = "./Rerank/random_s0_d0/"
+model_name_or_path = "./Pretrain_Model/410_stable_random_1024/ft"
+train_data = './mathlib_handler_benchmark_410/random/random_our/train_expand_premise_for_rerank_s0_d0.jsonl'
+model_type = 'encoder_only'
+corpus_data = './mathlib_handler_benchmark_410/statement.jsonl'
+eval_data = './mathlib_handler_benchmark_410/random/random_our/retrieval_output_val_s0_d0.jsonl'
+module_premise = './mathlib_handler_benchmark_410/module_id_mapping.json'
+shuffl_prob = 0
+remove_prob = 0
+learning_rate = 1e-4
+fp16 = 'True'
+num_train_epochs = 8
+per_device_train_batch_size = 2
+gradient_accumulation_steps = 8
+dataloader_drop_last = 'True'
+train_group_size = 8
+max_len = 1024
+weight_decay = 0.01
+logging_steps = 100
+save_strategy = 'epoch'
+save_total_limit = 2
+evaluation_strategy = 'epoch'
+report_to = 'wandb'
+load_best_model_at_end='True'
+metric_for_best_model = 'eval_Recall@10'
+greater_is_better = 'True'
+rerank_num=20
+

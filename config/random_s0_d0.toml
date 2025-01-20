@@ -1,0 +1,104 @@
+config_name = "410_stable_random_s0_d0.toml"
+
+[dataset]
+statement_path = "./mathlib_handler_benchmark_410/statement.jsonl"
+train_dataset_path = "./mathlib_handler_benchmark_410/random/random_our/train.jsonl"
+test_dataset_path = "./mathlib_handler_benchmark_410/random/random_our/val.jsonl"
+random_seed = 13
+test_hard_ratio = 1
+shuffle_ratio = 0
+random_delete_ratio = 0
+all_data_path = "./mathlib_handler_benchmark_410/"
+parent_path = "./mathlib_handler_benchmark_410/random/"
+parent_save_path_our="./mathlib_handler_benchmark_410/random/random_our/"
+parent_save_path_leandojo="./mathlib_handler_benchmark_410/random/random_leandojo/"
+
+
+[tokenizer]
+corpus_path = "./mathlib_handler_benchmark_410/random/random_our/pretrain_tokenizer.txt"
+tokenizer_type = "WordPiece"
+save_dir = "./mathlib_handler_benchmark_410/random/random_our/tokenizer"
+
+[model]
+hidden_size = 768
+num_hidden_layers = 6
+num_attention_heads = 12
+intermediate_size = 3072
+max_position_embeddings=512
+
+
+[pretrain]
+output_dir = "./Pretrain_Model/410_stable_random/"
+train_file_path = "./mathlib_handler_benchmark_410/random/random_our/pretrain_train_data.jsonl"
+eval_file_path = "./mathlib_handler_benchmark_410/random/random_our/pretrain_eval_data.jsonl"
+num_train_epochs = 50
+per_device_train_batch_size = 32
+gradient_accumulation_steps = 4
+save_strategy = "steps"
+save_steps = 100
+save_total_limit = 1
+learning_rate = 2e-4
+logging_steps = 10
+bf16 = 'True'
+tf32 = 'True'
+report_to = "wandb"
+evaluation_strategy = "steps"
+eval_steps = 100
+
+
+
+[finetune]
+output_dir = "./Finetune_Model/410_stable_random_s0_d0/"
+model_name_or_path = "./Pretrain_Model/410_stable_random/ft/"
+train_data = "./mathlib_handler_benchmark_410/random/random_our/train_expand_premise.jsonl"
+eval_dataset = "./mathlib_handler_benchmark_410/random/random_our/val.jsonl"
+corpus_data = './mathlib_handler_benchmark_410/statement.jsonl'
+used_premise = './mathlib_handler_benchmark_410/statement.jsonl'
+module_premise = './mathlib_handler_benchmark_410/module_id_mapping.json'
+learning_rate = 2e-4
+fp16 = "True"
+num_train_epochs = 20
+per_device_train_batch_size = 32
+gradient_accumulation_steps = 1
+dataloader_drop_last = "True"
+normlized = "True"
+temperature = 0.02
+query_max_len = 512
+passage_max_len = 256
+train_group_size = 2
+use_inbatch_neg='True'
+logging_steps = 10
+query_instruction_for_retrieval = ""
+save_strategy = "steps"
+save_steps = 1000
+evaluation_strategy = "steps"
+eval_steps = 2000
+save_total_limit = 1
+model_type = 'encoder_only'
+use_lora = "False"
+lora_rank = 32
+target_module = ['']
+lr_scheduler_type = "constant"
+metric_for_best_model = "Recall@10"
+device_num = 8
+
+
+[eval]
+encoder = "./Finetune_Model/410_stable_random_s0_d0/"
+eval_file =  './mathlib_handler_benchmark_410/random/random_our/test_increase.jsonl'
+#eval_file = './mathlib_handler_benchmark_410/random/random_our/train_expand_premise.jsonl'
+corpus_file = './mathlib_handler_benchmark_410/statement.jsonl'
+load_embedding = 'True'
+#save_output_path = './mathlib_handler_benchmark_410/random/random_our/train_expand_premise_for_rerank_s0_d0.jsonl'
+save_output_path = './mathlib_handler_benchmark_410/random/random_our/retrieval_output_test_s0_d0.jsonl'
+batch_size = 256
+save_path_context="embeddings_context_random_our.memmap"
+save_path_goal="embeddings_goal_random_our.memmap"
+
+
+
+[rerank]
+topk=100
+rerank_num = 20
+model_path = "./Rerank/random_s0_d0/"
+test_path = './mathlib_handler_benchmark_410/random/random_our/retrieval_output_test_s0_d0.jsonl'
