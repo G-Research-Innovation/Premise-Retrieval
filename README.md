@@ -14,9 +14,11 @@ pip install -r requirements.txt
 
 ## Dataset
 
-First, generate the raw dataset using our script, which can be downloaded from [this link](https://huggingface.co/datasets/ruc-ai4math/mathlib_handler_benchmark_410).
+First, download our dataset from [this link](https://huggingface.co/datasets/ruc-ai4math/mathlib_handler_benchmark_410).
 
-Next, preprocess the dataset. You can generate the dataset required for our method by running the following script:
+Next, preprocess the dataset. You can generate the dataset required for our method by running the following script.
+
+You can skip the preprocess step and directly use the dataset from the download.
 
 ```bash
 python preprocess/generate_our_from_raw.py --config_path config/random.toml
@@ -25,7 +27,7 @@ python preprocess/generate_pretrain_tokenizer_data.py --config_path config/rando
 
 ## Training the Tokenizer
 
-Next, train the Lean-specific tokenizer:
+Train the Lean-specific tokenizer by running the following script:
 
 ```bash
 python pretrain/pretrain_tokenizer.py --config_path config/random.toml
@@ -35,7 +37,7 @@ python pretrain/pretrain_tokenizer.py --config_path config/random.toml
 
 ### Pretraining
 
-Now, pretrain the Retrieval model:
+To pretrain the Retrieval model, you can run the following script:
 
 ```bash
 torchrun --nproc_per_node=8 pretrain/pretrain.py --config_path config/random.toml
