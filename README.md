@@ -55,6 +55,8 @@ torchrun --nproc_per_node=8 finetune/run.py --config_path config/random.toml
 
 To generate the data for training the rerank model, first, you need to modify the `eval_file` under the `[eval]` section in the `config.toml` file to the path where `train_expand_premise.jsonl` is located. Also, change the `save_output_path` to `train_expand_premise_for_rerank_s0_d0.jsonl`. Then, run the following script:
 
+You can skip this step and directly use the dataset we have generated.
+
 ```bash
 python test_finetune/generate_hard_negative.py --config_path config/random.toml
 ```
