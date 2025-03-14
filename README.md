@@ -1,4 +1,8 @@
 
+#LEANDOJO Notes
+look here
+https://github.com/lean-dojo/LeanDojo/blob/main/scripts/generate-benchmark-lean4.ipynb
+
 # Lean State Premise Retrieval
 
 This project focuses on using **state** in the Lean language for premise retrieval.
