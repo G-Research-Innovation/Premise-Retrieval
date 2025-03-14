@@ -8,8 +8,9 @@ This project focuses on using **state** in the Lean language for premise retriev
 Set up the enviroment by running:
 
 ```bash
-conda create -n pytorch python=3.10
-pip install -r requirements.txt
+install uv
+uv sync
+source .venv/bin/activate
 ```
 
 ## Dataset
