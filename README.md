@@ -49,7 +49,7 @@ After pretraining, fine-tune the model using the script below.
 You also need to adjust the `device_num` parameter under the `[finetune]` section in the `config/random.toml` file according to the number of GPUs you are using. 
 
 ```bash
-torchrun --nproc_per_node=NUM_GPUS finetune/run.py --config_path config/random.toml
+`torchrun --nproc_per_node=NUM_GPUS finetune/run.py --config_path config/random.toml`
 ```
 
 ## Training the Rerank Model
